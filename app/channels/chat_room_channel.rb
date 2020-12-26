@@ -5,6 +5,7 @@ class ChatRoomChannel < ApplicationCable::Channel
 
   def unsubscribed
     # Any cleanup needed when channel is unsubscribed
+    ActionCable.server.broadcast "chat_room_channel", chat_room_name: @current_user, type: "left"
   end
 
   def speak(data)
@@ -13,5 +14,6 @@ class ChatRoomChannel < ApplicationCable::Channel
 
   def announce(data)
     ActionCable.server.broadcast "chat_room_channel", chat_room_name: data["name"], type: data["type"]
+    @current_user ||= data["name"]
   end
 end
